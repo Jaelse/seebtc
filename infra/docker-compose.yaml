@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+    networks:
+      - seebtc
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    volumes:
+      - ./data/zookeeper:/var/lib/zookeeper/data
+      - ./data/zookeeper:/var/lib/zookeeper/log
+    networks:
+      - seebtc
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    environment:
+      - KAFKA_KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./data/kafka:/var/lib/kafka/data
+    networks:
+      - seebtc
+networks:
+  seebtc:
+    driver: bridge

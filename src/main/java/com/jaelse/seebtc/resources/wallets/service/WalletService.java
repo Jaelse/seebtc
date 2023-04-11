@@ -10,15 +10,15 @@ import reactor.core.publisher.Mono;
 
 public interface WalletService {
 
-    Flux<WalletEntity> getAllWallets();
+    Flux<WalletEntity> getAll();
 
-    Mono<WalletEntity> getWalletById(ObjectId id);
+    Mono<WalletEntity> findById(ObjectId id);
 
-    Mono<WalletEntity> createWallet(CreateWalletDto wallet);
+    Mono<WalletEntity> create(CreateWalletDto wallet);
 
-    Mono<WalletEntity> updateWallet(ObjectId id, UpdateWalletDto updateWalletDto);
+    Mono<WalletEntity> update(ObjectId id, UpdateWalletDto updateWalletDto);
 
-    Mono<WalletEntity> deleteWalletById(ObjectId id);
+    Mono<WalletEntity> delete(ObjectId id);
 
     Flux<WalletEntity> find(WalletQuery query);
 

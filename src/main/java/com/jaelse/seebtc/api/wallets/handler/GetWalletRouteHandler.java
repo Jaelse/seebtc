@@ -30,7 +30,7 @@ public class GetWalletRouteHandler implements HandlerFunction<ServerResponse> {
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
         return Mono.just(new ObjectId(request.pathVariable("id")))
-                .flatMap(service::getWalletById)
+                .flatMap(service::findById)
                 .map(assembler::assemble)
                 .flatMap(entity -> ServerResponse
                         .created(URI.create("http://localhost:8080/v1/wallets/" + entity.getId()))

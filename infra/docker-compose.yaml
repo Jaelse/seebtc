@@ -10,7 +10,7 @@ services:
     networks:
       - seebtc
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: zookeeper:latest
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -20,13 +20,14 @@ services:
     networks:
       - seebtc
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: bitnami/kafka:latest
     container_name: kafka
     environment:
-      - KAFKA_KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_KAFKA_LOG_DIRS=/var/lib/kafka/data
-      - KAFKA_KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
       - "9092:9092"
     volumes:

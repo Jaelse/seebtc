@@ -24,7 +24,7 @@ public class GetAllWalletsRouteHandler implements HandlerFunction<ServerResponse
 
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
-        return service.getAllWallets()
+        return service.getAll()
                 .collectList()
                 .map(assembler::assemble)
                 .map(list -> WalletModelList.builder()

@@ -24,17 +24,17 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Flux<WalletEntity> getAllWallets() {
+    public Flux<WalletEntity> getAll() {
         return repository.getAllWallets();
     }
 
     @Override
-    public Mono<WalletEntity> getWalletById(ObjectId id) {
+    public Mono<WalletEntity> findById(ObjectId id) {
         return repository.findById(id);
     }
 
     @Override
-    public Mono<WalletEntity> createWallet(CreateWalletDto dto) {
+    public Mono<WalletEntity> create(CreateWalletDto dto) {
         return repository.insert(WalletEntity.builder()
                 .id(new ObjectId())
                 .balance(new Decimal128(new BigDecimal(dto.initialBalance())))
@@ -43,14 +43,14 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Mono<WalletEntity> updateWallet(ObjectId id, UpdateWalletDto dto) {
+    public Mono<WalletEntity> update(ObjectId id, UpdateWalletDto dto) {
         //TODO: and fields that is could update
         return repository.findById(id)
                 .flatMap(repository::save);
     }
 
     @Override
-    public Mono<WalletEntity> deleteWalletById(ObjectId id) {
+    public Mono<WalletEntity> delete(ObjectId id) {
         return repository.findById(id)
                 .flatMap(wallet -> {
                     wallet.setIsDeleted(true);

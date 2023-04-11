@@ -27,7 +27,7 @@ public class DeleteWalletRouteHandler implements HandlerFunction<ServerResponse>
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
         return Mono.just(new ObjectId(request.pathVariable("id")))
-                .flatMap(service::deleteWalletById)
+                .flatMap(service::delete)
                 .map(assembler::assemble)
                 .flatMap(entity -> ServerResponse
                         .ok()

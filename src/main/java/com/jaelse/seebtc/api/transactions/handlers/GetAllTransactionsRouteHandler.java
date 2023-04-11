@@ -1,10 +1,11 @@
-package com.jaelse.seebtc.api.wallets.handler;
+package com.jaelse.seebtc.api.transactions.handlers;
 
+import com.jaelse.seebtc.lib.assemblers.TransactionAssembler;
 import com.jaelse.seebtc.lib.assemblers.WalletAssembler;
-import com.jaelse.seebtc.lib.dtos.UpdateWalletDto;
+import com.jaelse.seebtc.lib.models.TransactionModelList;
+import com.jaelse.seebtc.lib.models.WalletModelList;
+import com.jaelse.seebtc.resources.transactions.service.TransactionService;
 import com.jaelse.seebtc.resources.wallets.service.WalletService;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -13,31 +14,32 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-
 @Component
-public class UpdateWalletRouteHandler implements HandlerFunction<ServerResponse> {
+public class GetAllTransactionsRouteHandler implements HandlerFunction<ServerResponse> {
 
-    private final WalletService service;
-    private final WalletAssembler assembler;
+    private final TransactionService service;
+    private final TransactionAssembler assembler;
 
-    @Autowired
-    public UpdateWalletRouteHandler(WalletService service, WalletAssembler assembler) {
+    public GetAllTransactionsRouteHandler(TransactionService service, TransactionAssembler assembler) {
         this.service = service;
         this.assembler = assembler;
     }
 
-
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
-        return request.bodyToMono(UpdateWalletDto.class)
-                .zipWith(Mono.just(new ObjectId(request.pathVariable("id"))))
-                .flatMap(dtoNId -> service.update(dtoNId.getT2(), dtoNId.getT1()))
+        return service.getAll().collectList()
                 .map(assembler::assemble)
+                .map(list -> TransactionModelList.builder()
+                        .limit(list.size())
+                        .offset(0L)
+                        .transactions(list)
+                        .count((long) list.size())
+                        .build())
                 .flatMap(entity -> ServerResponse
-                        .created(URI.create("http://localhost:8080/v1/wallets/" + entity.getId()))
+                        .ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(entity))
                 );
     }
+
 }

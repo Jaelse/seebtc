@@ -1,7 +1,7 @@
-package com.jaelse.seebtc.api.transactions.handlers;
+package com.jaelse.seebtc.api.wallet_balance_history.handlers;
 
-import com.jaelse.seebtc.lib.assemblers.TransactionAssembler;
-import com.jaelse.seebtc.resources.transactions.service.TransactionService;
+import com.jaelse.seebtc.lib.assemblers.WalletBalanceHistoryAssembler;
+import com.jaelse.seebtc.resources.WalletBalanceHistory.service.WalletBalanceHistoryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,20 +12,17 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-
 @Component
-public class GetTransactionRouteHandler implements HandlerFunction<ServerResponse> {
-
-    private final TransactionService service;
-    private final TransactionAssembler assembler;
+public class GetBalanceHistoryRouteHandler implements HandlerFunction<ServerResponse> {
+    private final WalletBalanceHistoryService service;
+    private final WalletBalanceHistoryAssembler assembler;
 
     @Autowired
-    public GetTransactionRouteHandler(TransactionService service, TransactionAssembler assembler) {
+    public GetBalanceHistoryRouteHandler(WalletBalanceHistoryService service,
+                                         WalletBalanceHistoryAssembler assembler) {
         this.service = service;
         this.assembler = assembler;
     }
-
 
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
@@ -38,5 +35,4 @@ public class GetTransactionRouteHandler implements HandlerFunction<ServerRespons
                         .body(BodyInserters.fromValue(model))
                 );
     }
-
 }

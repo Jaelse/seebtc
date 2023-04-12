@@ -8,10 +8,6 @@ import lombok.experimental.Accessors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(fluent = true)
 public class CreateWalletDto {
-
-    @NonNull
-    @Builder.Default
-    private Long initialBalance = 1000L;
+    private Long initialBalance;
 }

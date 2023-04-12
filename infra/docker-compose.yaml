@@ -30,6 +30,8 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
       - "9092:9092"
+    depends_on:
+      - zookeeper
     volumes:
       - ./data/kafka:/var/lib/kafka/data
     networks:

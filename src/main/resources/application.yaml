@@ -1,0 +1,4 @@
+instance:
+  name: seebtc
+kafka:
+  servers: localhost:9092

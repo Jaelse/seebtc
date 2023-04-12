@@ -4,6 +4,7 @@ import com.jaelse.seebtc.lib.assemblers.WalletAssembler;
 import com.jaelse.seebtc.resources.wallets.service.WalletService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.HandlerFunction;
@@ -31,7 +32,10 @@ public class DeleteWalletRouteHandler implements HandlerFunction<ServerResponse>
                 .map(assembler::assemble)
                 .flatMap(entity -> ServerResponse
                         .ok()
-                        .body(BodyInserters.fromValue(entity))
+                        .body(BodyInserters.fromValue(entity)))
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
                 );
     }
 }

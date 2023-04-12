@@ -4,6 +4,7 @@ import com.jaelse.seebtc.lib.assemblers.WalletBalanceHistoryAssembler;
 import com.jaelse.seebtc.resources.WalletBalanceHistory.service.WalletBalanceHistoryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -32,7 +33,10 @@ public class GetBalanceHistoryRouteHandler implements HandlerFunction<ServerResp
                 .flatMap(model -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(model))
+                        .body(BodyInserters.fromValue(model)))
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
                 );
     }
 }

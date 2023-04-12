@@ -26,7 +26,7 @@ public class WalletBalanceHistoryAssembler {
                 .dayOfMonth(entity.getDayOfMonth())
                 .hour(entity.getHour())
                 .amount(entity.getAmount().bigDecimalValue())
-                .dateTime(entity.getDateTime())
+                .dateTime(entity.getDateTime().toString())
                 .build();
 
         return model;

@@ -29,7 +29,7 @@ public class ListWalletRouteHandler implements HandlerFunction<ServerResponse> {
 
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
-        return Mono.just(assemble(request.queryParams()))
+        return Mono.just(assembler.assemble(request.queryParams()))
                 .flatMap(query -> service.find(query)
                         .collectList()
                         .map(assembler::assemble)
@@ -45,29 +45,6 @@ public class ListWalletRouteHandler implements HandlerFunction<ServerResponse> {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(entity))
                 );
-    }
-
-
-    private WalletQuery assemble(MultiValueMap<String, String> params) {
-        var queryBuilder = WalletQuery.builder();
-
-        if (params.get("offset") != null) {
-            queryBuilder.offset(Long.parseLong(params.get("offset").get(0)));
-        }
-
-        if (params.get("limit") != null) {
-            queryBuilder.limit(Integer.getInteger(params.get("limit").get(0)));
-        }
-
-        if (params.get("ids") != null) {
-            var ids = params.get("ids")
-                    .stream()
-                    .map(ObjectId::new)
-                    .collect(Collectors.toSet());
-            queryBuilder.ids(ids);
-        }
-
-        return queryBuilder.build();
     }
 
 }

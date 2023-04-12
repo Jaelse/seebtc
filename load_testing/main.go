@@ -44,8 +44,6 @@ func main() {
 
 	// Launch senders
 	for i := 0; i < numSenders; i++ {
-		r := rand.Intn(10)
-		time.Sleep(time.Duration(r) * time.Microsecond)
 
 		wg.Add(1)
 		go func() {

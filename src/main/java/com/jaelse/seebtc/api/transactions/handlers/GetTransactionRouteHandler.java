@@ -4,6 +4,7 @@ import com.jaelse.seebtc.lib.assemblers.TransactionAssembler;
 import com.jaelse.seebtc.resources.transactions.service.TransactionService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -36,6 +37,10 @@ public class GetTransactionRouteHandler implements HandlerFunction<ServerRespons
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(model))
+                )
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
                 );
     }
 

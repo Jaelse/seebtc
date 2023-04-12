@@ -40,8 +40,8 @@ public class WalletRouter {
                 .GET("/v1/wallets/{id}", getWalletRouteHandler)
                 .GET("/v1/wallets", listWalletRouteHandler)
                 .GET("/v1/allWallets", getAllWalletsRouteHandler)
-                .PATCH("/v1/wallets", updateWalletRouteHandler)
-                .DELETE("/v1/wallets", deleteWalletRouteHandler)
+                .PATCH("/v1/wallets/{id}", updateWalletRouteHandler)
+                .DELETE("/v1/wallets/{id}", deleteWalletRouteHandler)
                 .build();
     }
 }

@@ -7,6 +7,7 @@ import com.jaelse.seebtc.lib.queries.WalletBalanceHistoryQuery;
 import com.jaelse.seebtc.resources.WalletBalanceHistory.service.WalletBalanceHistoryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -41,11 +42,14 @@ public class WalletHistoryBetweenHoursRouteHandler implements HandlerFunction<Se
                                 getDateTime(tuple.getT1().getStartDatetime()),
                                 getDateTime(tuple.getT1().getEndDatetime()))
                         .collectList()
-                        .map(assembler::assembleBalance)
-                ).flatMap(model -> ServerResponse
+                        .map(assembler::assembleBalance))
+                .flatMap(model -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(model))
+                        .body(BodyInserters.fromValue(model)))
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
                 );
     }
 

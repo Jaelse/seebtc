@@ -1,9 +1,6 @@
 package com.jaelse.seebtc.resources.WalletBalanceHistory.handlers;
 
-import com.jaelse.seebtc.lib.events.BaseEvent;
-import com.jaelse.seebtc.lib.events.Topic;
-import com.jaelse.seebtc.lib.events.TransactionCreatedEvent;
-import com.jaelse.seebtc.lib.events.WalletCreatedEvent;
+import com.jaelse.seebtc.lib.events.*;
 import com.jaelse.seebtc.resources.WalletBalanceHistory.service.WalletBalanceHistoryService;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -67,7 +64,9 @@ public class TransactionCreatedEventHandlerConfiguration {
                         consumerRecord.topic(),
                         consumerRecord.offset())
                 )
-                .flatMap(stringBaseEventConsumerRecord -> handler(stringBaseEventConsumerRecord.topic(), stringBaseEventConsumerRecord.key(),
+                .flatMap(stringBaseEventConsumerRecord -> handler(
+                        stringBaseEventConsumerRecord.topic(),
+                        stringBaseEventConsumerRecord.key(),
                         stringBaseEventConsumerRecord.value()))
                 .subscribe();
 
@@ -76,15 +75,12 @@ public class TransactionCreatedEventHandlerConfiguration {
 
     Mono<Void> handler(String topic, String key, BaseEvent<?> evt) {
         var registrar = registrar();
-        switch (topic) {
-            case Topic.WALLET_CREATED:
-                return registrar.get(topic)
-                        .handle(new ObjectId(key), (WalletCreatedEvent) evt);
-            case Topic.TRANSACTION_CREATED:
-                return registrar.get(topic)
-                        .handle(new ObjectId(key), (TransactionCreatedEvent) evt);
-            default:
-                return Mono.error(new ClassNotFoundException());
-        }
+        return switch (topic) {
+            case Topic.WALLET_CREATED -> registrar.get(topic)
+                    .handle(new ObjectId(key), (WalletCreatedEvent) evt);
+            case Topic.TRANSACTION_CREATED -> registrar.get(topic)
+                    .handle(new ObjectId(key), (TransactionCreatedEvent) evt);
+            default -> Mono.error(new ClassNotFoundException());
+        };
     }
 }

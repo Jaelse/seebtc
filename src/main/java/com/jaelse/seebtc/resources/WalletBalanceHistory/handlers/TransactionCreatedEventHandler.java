@@ -40,14 +40,13 @@ public class TransactionCreatedEventHandler implements EventHandler<TransactionC
                                     var newAmount = lastHistory.getAmount().bigDecimalValue().add(payload.getAmount());
                                     log.info("No wallet balance history found for this hour. Balance {}. Creating...", newAmount);
                                     return service.create(CreateWalletBalanceDto.builder()
-                                                    .walletId(key)
-                                                    .year(payload.getDateTime().getYear())
-                                                    .dayOfMonth(payload.getDateTime().getDayOfMonth())
-                                                    .hour(payload.getDateTime().getHour())
-                                                    .amount(newAmount)
-                                                    .dateTime(payload.getDateTime())
-                                                    .build())
-                                            .doOnNext(history -> log.info("Now balance history id: {}", history.getId()));
+                                            .walletId(key)
+                                            .year(payload.getDateTime().getYear())
+                                            .dayOfMonth(payload.getDateTime().getDayOfMonth())
+                                            .hour(payload.getDateTime().getHour())
+                                            .amount(newAmount)
+                                            .dateTime(payload.getDateTime())
+                                            .build());
                                 })
                 )
                 .then();

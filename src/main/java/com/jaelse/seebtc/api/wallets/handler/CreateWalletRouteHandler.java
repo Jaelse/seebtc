@@ -4,6 +4,7 @@ import com.jaelse.seebtc.lib.assemblers.WalletAssembler;
 import com.jaelse.seebtc.lib.dtos.CreateWalletDto;
 import com.jaelse.seebtc.resources.wallets.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -38,6 +39,10 @@ public class CreateWalletRouteHandler implements HandlerFunction<ServerResponse>
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(entity))
                 )
-                .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
+                .switchIfEmpty(Mono.error(new ServerWebInputException("Invalid request body.")))
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
+                );
     }
 }

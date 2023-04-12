@@ -5,6 +5,7 @@ import com.jaelse.seebtc.lib.dtos.UpdateWalletDto;
 import com.jaelse.seebtc.resources.wallets.service.WalletService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -35,9 +36,12 @@ public class UpdateWalletRouteHandler implements HandlerFunction<ServerResponse>
                 .flatMap(dtoNId -> service.update(dtoNId.getT2(), dtoNId.getT1()))
                 .map(assembler::assemble)
                 .flatMap(entity -> ServerResponse
-                        .created(URI.create("http://localhost:8080/v1/wallets/" + entity.getId()))
+                        .ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(entity))
+                        .body(BodyInserters.fromValue(entity)))
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
                 );
     }
 }

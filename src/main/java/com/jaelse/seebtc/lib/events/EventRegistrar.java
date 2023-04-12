@@ -1,7 +1,4 @@
-package com.jaelse.seebtc.resources.WalletBalanceHistory.handlers;
-
-import com.jaelse.seebtc.lib.events.EventHandler;
-import reactor.util.function.Tuple2;
+package com.jaelse.seebtc.lib.events;
 
 import java.util.HashMap;
 import java.util.Map;

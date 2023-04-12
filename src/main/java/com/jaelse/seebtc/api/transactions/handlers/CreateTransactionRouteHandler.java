@@ -1,10 +1,12 @@
 package com.jaelse.seebtc.api.transactions.handlers;
 
+import com.jaelse.seebtc.api.wallets.handler.CreateWalletRouteHandler;
 import com.jaelse.seebtc.lib.assemblers.TransactionAssembler;
 import com.jaelse.seebtc.lib.dtos.CreateTransactionDto;
 import com.jaelse.seebtc.resources.transactions.service.TransactionService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -40,6 +42,10 @@ public class CreateTransactionRouteHandler implements HandlerFunction<ServerResp
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(entity))
                 )
-                .switchIfEmpty(Mono.error(new ServerWebInputException("Request body cannot be empty.")));
+                .switchIfEmpty(Mono.error(new ServerWebInputException("Invalid request body.")))
+                .onErrorResume(throwable -> ServerResponse
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(BodyInserters.fromValue("Error while handling the request: " + throwable.getCause()))
+                );
     }
 }

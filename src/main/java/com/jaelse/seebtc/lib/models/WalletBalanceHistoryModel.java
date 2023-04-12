@@ -17,5 +17,5 @@ public class WalletBalanceHistoryModel {
     private Integer dayOfMonth;
     private Integer hour;
     private BigDecimal amount;
-    private LocalDateTime dateTime;
+    private String dateTime;
 }
